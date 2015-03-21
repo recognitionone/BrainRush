@@ -18,33 +18,60 @@ local _H = display.contentHeight
 
 local myObject
 local myButton
+local myObject2
+local myButton2
 local myScore
 local isMyButtonWhite = true
 local isMyObjectWhite = true
+local isMyButtonWhite2 = true
+local isMyObjectWhite2 = true
 local myTime = 1500
 
 local function onObjectTouch( event )
 	if event.phase == "began" then		
-		myButton:scale(0.5,0.5)	
+		myButton:setFillColor(1,0,1)		
 		isMyButtonWhite = false
-	elseif event.phase == "ended" then	
-		myButton:scale(2,2)		
+	elseif event.phase == "ended" then			
+		myButton:setFillColor(1,1,1)		
 		isMyButtonWhite = true
 	end
 	return true
 end
 
+local function onObjectTouch2( event )
+	if event.phase == "began" then		
+		myButton2:setFillColor(0,1,0)		
+		isMyButtonWhite2 = false
+	elseif event.phase == "ended" then			
+		myButton2:setFillColor(1,1,1)		
+		isMyButtonWhite2 = true
+	end
+	return true
+end
+
 local function createMyObject()
-	myObject = display.newRect( _W/2, 0, 50, 50)	
+	myObject = display.newRect( _W/2-60, 0, 50, 50)	
+	
 	isMyObjectWhite = true
 	z = math.random(1,2)
 	myTime = myTime - 20
 	if z == 1 then
-		myObject:removeSelf()
-		myObject = display.newCircle( _W/2, 0, 25)
+		myObject:setFillColor(0,1,0)
 		isMyObjectWhite = false
 	end		
 	transition.to( myObject, { time=myTime, y=(_H+25)} )
+	
+	timer.performWithDelay(myTime/2, function()
+		myObject2 = display.newRect( _W/2+60, 0, 50, 50)
+		isMyObjectWhite2 = true
+		z2 = math.random(1,2)
+		
+		if z2 == 1 then
+			myObject2:setFillColor(0,1,0)
+			isMyObjectWhite2 = false
+		end		
+		transition.to( myObject2, { time=myTime, y=(_H+25)} )
+	end, 1)
 end
 
 local function removeMyObject()
@@ -67,40 +94,26 @@ local function gameEnded()
 	composer.gotoScene( "menu", "fade", 400  )				
 end
 
-function goToScene2()
-	endCreateMyObjectTimer()	
-	composer.gotoScene( "game4", "fade", 400  )				
-end
-
-
 function detectCollision()
 	if myObject ~= nil and myObject.y >= _H-25 then	
 		if isMyObjectWhite == true then
 			if isMyButtonWhite == true then
 				score.add(1)
-				print("green green match")
+				print("white white match")
 				removeMyObject()	
-				if score.get() >= 10 then
-					goToScene2()
-				else
-					createMyObject()
-				end
+				createMyObject()
 			else
 				gameEnded()
 				print("no match")
-				removeMyObject()			
+				removeMyObject()	
+		
 			end
 		elseif isMyObjectWhite == false then
 			if isMyButtonWhite == false then
-			score.add(1)
+				score.add(1)
 				print("green green match")
-				
 				removeMyObject()	
-				if score.get() >= 10 then
-					goToScene2()
-				else
-					createMyObject()
-				end
+				createMyObject()
 			else
 				gameEnded()
 				print("no match")
@@ -132,12 +145,14 @@ function scene:create( event )
 	background:setFillColor(0/255,137/255,166/255)
 	sceneGroup:insert( background )
 
-	myButton = display.newRect( _W/2, _H-25, 50, 50)
+	myButton = display.newRect( _W/2-60, _H-25, 50, 50)
 	myButton.id = "myButtonWhite"
 	sceneGroup:insert(myButton)
 	
-	myCircleButton = display.newCircle( _W/2, _H-25, 25)
-	sceneGroup:insert(myCircleButton)
+	myButton2 = display.newRect( _W/2+60, _H-25, 50, 50)
+	myButton2.touch = onObjectTouch2
+	myButton2.id = "myButton2White"
+	sceneGroup:insert(myButton2)
 	
 	myScore = display.newText(score.get(), _W-20, 20, "Track", 15)
 	sceneGroup:insert(myScore)
@@ -153,11 +168,9 @@ function scene:show( event )
 		composer.removeScene( "menu" )
 		composer.removeHidden()
 		myButton:addEventListener( "touch", onObjectTouch )	
-		createMyObject()		
-		
-		detectCollisionTimer = timer.performWithDelay(1, detectCollision, -1)
-				
-		
+		myButton2:addEventListener( "touch", onObjectTouch2 )	
+		createMyObject()				
+		detectCollisionTimer = timer.performWithDelay(1, detectCollision, -1)					
 		timer.performWithDelay(myTime*100, gameEnded, 1)
 		
 	end

@@ -75,9 +75,14 @@ function detectCollision()
 		if isMyObjectWhite == true then
 			if isMyButtonWhite == true then
 				score.add(1)
-				print("white white match")
+				print("green green match")
+				
 				removeMyObject()	
-				createMyObject()
+				if score.get() >= 10 then
+					goToScene2()
+				else
+					createMyObject()
+				end
 			else
 				gameEnded()
 				print("no match")

@@ -19,7 +19,7 @@ local _H = display.contentHeight
 
 local function onSceneTouch( self, event )
 	if event.phase == "began" then		
-		composer.gotoScene( "game", "fade", 400  )		
+		composer.gotoScene( "game4", "fade", 400  )		
 		return true
 	end
 end
@@ -38,10 +38,10 @@ function scene:create( event )
 	background.touch = onSceneTouch
 	sceneGroup:insert( background )
 
-	bestScore = display.newText("Best score: "..highscore, _W/2, _H/2-150, "Track", 15)
+	bestScore = display.newText("Best score: ", _W/2, _H/2-150, "Track", 15)
 	sceneGroup:insert(bestScore)
 	
-	newScore = display.newText("your new score: "..myscore, _W/2, _H/2-50, "Track", 15)
+	newScore = display.newText("your new score: ", _W/2, _H/2-50, "Track", 15)
 	sceneGroup:insert(newScore)
 	
 	
@@ -64,7 +64,7 @@ local sceneGroup = self.view
 		background:addEventListener( "touch", background )
 
 		
-		bestScore.text = "Best score: "..highscore
+		bestScore.text = "Best score: "..score.get()
 		newScore.text = "your new score: "..score.get()
 		
 	end
