@@ -60,6 +60,7 @@ local sceneGroup = self.view
 	if "did" == phase then
 		composer.removeScene( "game" )
 		composer.removeHidden()
+		composer.purgeAll()
 		startGameButton:addEventListener( "touch", startGameButton )
 		background:addEventListener( "touch", background )
 

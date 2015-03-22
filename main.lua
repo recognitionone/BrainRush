@@ -8,6 +8,8 @@
 -- decyzja czy 10 punktów do zdobycia na planszę to jest dobra liczba
 -- znaleźć odpowiednie kolory/ szatę graficzną dla tej gry 
 
+-- w game4 myObject2 nie chce znikać po dojściu na dół planszy, też nie zawsze znika kiedy level się kończy
+
 display.setStatusBar( display.HiddenStatusBar )
 
 local composer = require "composer"
